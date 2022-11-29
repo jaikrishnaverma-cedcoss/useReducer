@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
 import Modal from './Modal';
-
+import { useReducer } from 'react';
+const reducer=({state},action)=>{
+ switch (action.type){
+case "ADD":return {
+    state:{...action.payload}
+}
+break;
+default:return(state)
+    }
+}
 const Main = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [formData, setFormData] = useState({})
+    const [state,dispatch]=useReducer(reducer,{state:{}})
     const data = [
         { title: "Title", starish: true, desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit." },
         { title: "Description", starish: false, desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui recusandae in quisquam animi nemo repellendus autem perferendis quia vitae." },
@@ -11,17 +20,20 @@ const Main = () => {
         { title: "Amazon Parent Sku", starish: false, desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit." },
         { title: "Add Amazon Category", starish: false, desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit." },
     ]
+    console.log(state)
     const formHandler = (e) => {
         e.preventDefault();
         var data = new FormData(e.target);
         let formObject = Object.fromEntries(data.entries());
+
+        
+        dispatch({type:"ADD",payload:formObject })
         setIsOpen(true)
-        setFormData({ ...formObject })
         console.log(formObject);
     }
     return (
         <>
-            {isOpen && <Modal setIsOpen={setIsOpen} formData={formData} />}
+            {isOpen && <Modal setIsOpen={setIsOpen} formData={state.state} />}
             <form className="w80" onSubmit={formHandler}>
                 {
                     data.map(x => <div className="row full linebottom flexAIC flexSB p3 hp0">
